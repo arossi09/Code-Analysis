@@ -7,15 +7,25 @@ public class ControlPanel extends  JPanel{
 
     public ControlPanel(){
         setLayout(new BorderLayout());
+        setVisible(true);
+        JTextField urlTextField = new JTextField(28);
+        ActionNanny nanny = new ActionNanny(urlTextField, this);
+        JPanel inputPanel = new JPanel();
+        setLayout(new FlowLayout(FlowLayout.LEFT, 10, 5));
 
-        JTextField urlTextField = new JTextField(30);
-        ActionNanny nanny = new ActionNanny(urlTextField);
+        JLabel urlLabel = new JLabel("GitHub URL:");
+        inputPanel.add(urlLabel);
+        inputPanel.add(urlTextField);
 
         JButton goButton = new JButton("Go");
         goButton.addActionListener(nanny);
-        add(goButton, BorderLayout.EAST);
-        add(urlTextField, BorderLayout.WEST);
+        goButton.setPreferredSize(new Dimension(50, 30));
+
+
+        add(inputPanel);
+        add(goButton);
     }
+
 
 
 }

@@ -26,11 +26,24 @@ public class GithubRepo {
 
     }
 
+    public List<FileMetrics> getFileMetricsList() {
+        return fileMetricsList;
+    }
+
     public static GithubRepo getInstance(){
         if(instance == null){
             instance = new GithubRepo();
         }
         return instance;
+    }
+
+    public FileMetrics findFile(String fileName){
+        for(FileMetrics file : fileMetricsList){
+            if(file.getFileName().equals(fileName)){
+                return file;
+            }
+        }
+        return null;
     }
 
     public void cloneRepo(String repoUrl){
@@ -161,6 +174,7 @@ public class GithubRepo {
             throw new IOException("Cuoldnt delete dir!");
         }
     }
+
 
 
 }
