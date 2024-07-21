@@ -3,6 +3,5 @@
 
 Tasks:
 
-*make it so that the parser can identify the start and end of a method
-
-*add methodMetrics objects to each fileMetric attribute
+* Fix so it correctly counts blank spaces
+* Don't only have it count method contents but entirety of the file as well maybe
