@@ -1,6 +1,10 @@
+import com.github.javaparser.StaticJavaParser;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.util.IO;
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.stmt.Statement;
 
 import java.awt.*;
 import java.io.File;
@@ -10,6 +14,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 public class GithubRepo {
 
@@ -47,6 +52,17 @@ public class GithubRepo {
         }
     }
 
+    public void deleteClonedDir(){
+        String localPath = "cloned_repos";
+        if (Files.exists(Path.of(localPath))) {
+            try {
+                deleteDirectoryRecursively(Paths.get(localPath).toFile());
+            }catch (IOException e){
+                return;
+            }
+        }
+        System.out.println("No repo cloned yet!");
+    }
     public void processData(){
         if (localRepoPath == null) {
             System.out.println("No repository has been cloned yet.");
@@ -64,39 +80,69 @@ public class GithubRepo {
     }
 
     private void processFile(Path file) {
+
         try {
             FileMetrics fileMetrics = new FileMetrics(file.getFileName().toString());
+            System.out.println(fileMetrics.getFileName());
             List<String> lines = Files.readAllLines(file);
-//
-            int loc = 0;
+
+            int loc = lines.size();
             int eloc = 0;
             int iloc = 0;
-            int conditionals = 0;
 
-            for (String line : lines) {
-                System.out.println(line);
-                String trimmedLine = line.trim();
-                if (!trimmedLine.isEmpty() && !trimmedLine.startsWith("//")) {
-                    loc++;
-                    if (trimmedLine.contains(";")) {
-                        eloc++;
-                        iloc++;
-                    }
-                    if (conditionalsDictionary.isConditional(trimmedLine)) {
-                        eloc++;
-                        conditionals++;
+            CompilationUnit cu = StaticJavaParser.parse(file);
+
+            for (MethodDeclaration method : cu.findAll(MethodDeclaration.class)) {
+                MethodMetrics methodMetrics = new MethodMetrics(method.getNameAsString());
+                int methodLines = 0;
+                int methodLoc = 0;
+                int methodEloc = 0;
+                int methodIloc = 0;
+                int conditionalCount = 0;
+
+                if (method.getBody().isPresent()) {
+                    String[] Lines = method.getBody().get().toString().split("\n");
+
+                    for (String line : Lines) {
+                        String trimmedLine = line.trim();
+                        methodLines++;
+
+                        if (!trimmedLine.isEmpty() && !trimmedLine.startsWith("//")) {
+                            methodLoc++;
+
+                            if((!trimmedLine.contains("{") && !trimmedLine.contains("}")) ||
+                                    trimmedLine.contains("for") || ConditionalsDictionary.isConditional(trimmedLine)){
+                                methodEloc++;
+                            }
+                            if(trimmedLine.contains(";")){
+                                methodIloc++;
+                            }
+                            if (ConditionalsDictionary.isConditional(trimmedLine)) {
+                                conditionalCount++;
+                            }
+                        }
                     }
                 }
 
 
+                methodMetrics.setLines(methodLines);
+                methodMetrics.setLoc(methodLoc);
+                methodMetrics.setEloc(methodEloc);
+                methodMetrics.setIloc(methodIloc);
+                methodMetrics.setConditionalCount(conditionalCount);
+                fileMetrics.addMethod(methodMetrics);
+
+
+                eloc += methodEloc;
+                iloc += methodIloc;
             }
 
-            fileMetrics.setLines(lines.size());
+            fileMetrics.setLoc(loc);
             fileMetrics.setEloc(eloc);
             fileMetrics.setIloc(iloc);
-            fileMetrics.setLoc(loc);
             fileMetricsList.add(fileMetrics);
-        }catch (IOException e){
+
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -112,7 +158,7 @@ public class GithubRepo {
             }
         }
         if (!dir.delete()) {
-            throw new IOException("Couldnt delete dir!");
+            throw new IOException("Cuoldnt delete dir!");
         }
     }
 

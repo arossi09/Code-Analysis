@@ -9,6 +9,15 @@ public class FileMetrics {
     private int loc;
     private int eloc;
     private int iloc;
+    private int conditionals;
+
+    public int getConditionals() {
+        return conditionals;
+    }
+
+    public void setConditionals(int conditionals) {
+        this.conditionals = conditionals;
+    }
 
     public FileMetrics(String filename){
         this.fileName =filename;
@@ -26,8 +35,8 @@ public class FileMetrics {
         return methods;
     }
 
-    public void setMethods(List<MethodMetrics> methods) {
-        this.methods = methods;
+    public void addMethod(MethodMetrics method) {
+        this.methods.add(method);
     }
     public int getLines() {
         return lines;
