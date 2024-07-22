@@ -1,8 +1,8 @@
 BLAKE
 -Weka
 
-Possibe GUI with weka explorer, looking into file editing, could possibly make filter
-with conditions based on expections on LOC eLOC iLOC so only acceptable files pass the filter.
+Possible GUI with weka explorer, looking into file editing, could possibly make filter
+with conditions based on expectations on LOC eLOC iLOC so only acceptable files pass the filter.
 
 ANTHONY
 
