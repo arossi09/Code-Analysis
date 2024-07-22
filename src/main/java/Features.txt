@@ -6,6 +6,11 @@ with conditions based on expectations on LOC eLOC iLOC so only acceptable files 
 
 ANTHONY
 
+File explorer that lists the files from the Github repo parsed and methods metrics, flagging methods
+which don't meet our discused feature requirements in lectures.
+
+Link to Project Proposal:
+https://docs.google.com/document/d/1XzRhF_m0CAnpgoYVEUtiSONdC3SeuZC-pDn00IkRWhg/edit?usp=sharing
 
 STEVEN
 
