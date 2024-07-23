@@ -1,39 +1,46 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 public class FileExplorePanel extends JPanel {
 
     private JList<String> fileList;
     private DefaultListModel<String> fileListModel;
-    private JTextArea methodDetails;
+    private static DefaultListModel<String> methodListModel;
+    private JList<String> methodList;
 
     public FileExplorePanel(){
         fileListModel = new DefaultListModel<>();
+        methodListModel = new DefaultListModel<>();
         fileList = new JList<>(fileListModel);
-        methodDetails = new JTextArea();
-        methodDetails.setEditable(false);
+        methodList = new JList<>(methodListModel);
 
-        Font font = new Font("", Font.PLAIN, 16);
+        Font font = new Font("Arial", Font.BOLD, 16);
         fileList.setFont(font);
-        methodDetails.setFont(font);
+        methodList.setFont(font);
 
-        JScrollPane fileScrollPane = new JScrollPane(fileList);
-        JScrollPane methodScrollPane = new JScrollPane(methodDetails);
+        JMenu menu = new JMenu();
+        add(menu);
+        JLabel filesLabel = new JLabel("Java Files:");
+        JLabel methodsLabel = new JLabel("Methods:");
 
-        fileScrollPane.setPreferredSize(new Dimension(200, 500));
-        methodScrollPane.setPreferredSize(new Dimension(500, 500));
+        JPanel filePanel = new JPanel();
+        filePanel.setLayout(new BorderLayout());
+        filePanel.add(filesLabel, BorderLayout.NORTH);
+        filePanel.add(new JScrollPane(fileList), BorderLayout.CENTER);
 
-        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, fileScrollPane, methodScrollPane);
+        JPanel methodPanel = new JPanel();
+        methodPanel.setLayout(new BorderLayout());
+        methodPanel.add(methodsLabel, BorderLayout.NORTH);
+        methodPanel.add(new JScrollPane(methodList), BorderLayout.CENTER);
+
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, filePanel, methodPanel);
         splitPane.setDividerLocation(200);
+        setLayout(new BorderLayout());
         add(splitPane, BorderLayout.CENTER);
 
-        fileList.addMouseListener(new MouseNanny(fileList, methodDetails));
-
+        MethodListNanny methodNanny = new MethodListNanny(methodList);
+        fileList.addMouseListener(new FileListNanny(fileList, methodNanny));
+        methodList.addMouseListener(methodNanny);
     }
    public static void openFileExplorerFrame() {
         JFrame explorerFrame = new JFrame("File Explorer");
@@ -47,22 +54,24 @@ public class FileExplorePanel extends JPanel {
         explorerFrame.setVisible(true);
     }
 
-    public static void displayMethods(String selectedFile, JTextArea methodDetails){
+    public static void displayMethods(String selectedFile){
+        methodListModel.clear();
         FileMetrics file = GithubRepo.getInstance().findFile(selectedFile);
         if(file != null){
-            StringBuilder methodDetailsText = new StringBuilder();
+
             for (MethodMetrics method : file.getMethods()) {
-                methodDetailsText.append("Method Name: ").append(method.getMethodName()).append("\n");
-                methodDetailsText.append("LOC: ").append(method.getLoc()).append("\n");
-                methodDetailsText.append("ELOC: ").append(method.getEloc()).append("\n");
-                methodDetailsText.append("ILOC: ").append(method.getIloc()).append("\n");
-                methodDetailsText.append("Conditionals: ").append(method.getConditionalCount()).append("\n\n");
+                methodListModel.addElement(method.getMethodName() + " (" + method.getLines() + ") ");
             }
-            methodDetails.setText(methodDetailsText.toString());
         } else {
-            methodDetails.setText("No methods found for the selected file.");
+            methodListModel.addElement("No methods found for the selected file.");
         }
 
+    }
+
+    public static void openMethodDetails(String selectedFile, String selectedMethod){
+        FileMetrics file = GithubRepo.getInstance().findFile(selectedFile);
+        MethodMetrics method = file.findMethod(selectedMethod);
+        JOptionPane.showMessageDialog(null, "LOC" + method.getEloc());
     }
     public void setFiles(List<FileMetrics> files) {
         fileListModel.clear();
@@ -70,4 +79,5 @@ public class FileExplorePanel extends JPanel {
             fileListModel.addElement(file.getFileName());
         }
     }
+
 }

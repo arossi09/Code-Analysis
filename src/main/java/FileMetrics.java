@@ -11,6 +11,15 @@ public class FileMetrics {
     private int iloc;
     private int conditionals;
 
+    public MethodMetrics findMethod(String methodName){
+        for(MethodMetrics method : methods){
+            if(method.getMethodName().equals(methodName)){
+                return method;
+            }
+        }
+        return null;
+    }
+
     public int getConditionals() {
         return conditionals;
     }

@@ -1,6 +1,5 @@
 public class MethodMetrics {
     private String methodName;
-    private int lineCount;
     private int conditionalCount;
 
     private int lines;
@@ -20,13 +19,6 @@ public class MethodMetrics {
         this.methodName = methodName;
     }
 
-    public int getLineCount() {
-        return lineCount;
-    }
-
-    public void setLineCount(int lineCount) {
-        this.lineCount = lineCount;
-    }
 
     public int getConditionalCount() {
         return conditionalCount;
