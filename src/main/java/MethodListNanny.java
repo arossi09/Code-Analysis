@@ -18,7 +18,7 @@ public class MethodListNanny implements MouseListener {
     public void mouseClicked(MouseEvent e) {
         if (e.getClickCount() == 2) {
             if (e.getSource().equals(List) && selectedFile != null) {
-                String selectedMethod = List.getSelectedValue();
+                String selectedMethod = List.getSelectedValue().split(" ")[0];
                 FileExplorePanel.openMethodDetails(selectedFile, selectedMethod);
             }
         }

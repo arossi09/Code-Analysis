@@ -1,12 +1,10 @@
 import com.github.javaparser.StaticJavaParser;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.stmt.Statement;
+import org.apache.commons.io.FileUtils;
 
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -14,13 +12,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 
 public class GithubRepo {
 
     private static GithubRepo instance = null;
     private static String localRepoPath = null;
     private List<FileMetrics> fileMetricsList = new ArrayList<>();
+    private Git cloneCommand;
+    private static String localPath = "cloned_repos";
 
     private GithubRepo(){
 
@@ -47,17 +46,16 @@ public class GithubRepo {
     }
 
     public void cloneRepo(String repoUrl){
-        String localPath = "cloned_repos";
         if (Files.exists(Path.of(localPath))) {
             try {
-                deleteDirectoryRecursively(Paths.get(localPath).toFile());
+                FileUtils.deleteDirectory(Paths.get(localPath).toFile());
             }catch (IOException e){
-                return;
+                e.printStackTrace();
             }
         }
 
         try {
-            Git.cloneRepository().setURI(repoUrl).setDirectory(new File(localPath)).call();
+            cloneCommand = Git.cloneRepository().setURI(repoUrl).setDirectory(new File(localPath)).call();
             localRepoPath = localPath;
             System.out.println("Repository cloned to " + localPath);
         } catch (GitAPIException e) {
@@ -66,10 +64,9 @@ public class GithubRepo {
     }
 
     public void deleteClonedDir(){
-        String localPath = "cloned_repos";
         if (Files.exists(Path.of(localPath))) {
             try {
-                deleteDirectoryRecursively(Paths.get(localPath).toFile());
+                FileUtils.deleteDirectory(Paths.get(localPath).toFile());
             }catch (IOException e){
                 return;
             }
@@ -85,7 +82,7 @@ public class GithubRepo {
         try{
             Files.walk(Paths.get(localRepoPath))
                     .filter(Files::isRegularFile)
-                    .filter(path -> path.toString().endsWith("java"))
+                    .filter(path -> path.toString().endsWith("java") || path.toString().endsWith(".c"))
                     .forEach(this::processFile);
         } catch (IOException e) {
             e.printStackTrace();
@@ -96,7 +93,6 @@ public class GithubRepo {
 
         try {
             FileMetrics fileMetrics = new FileMetrics(file.getFileName().toString());
-            System.out.println(fileMetrics.getFileName());
             List<String> lines = Files.readAllLines(file);
 
             int loc = lines.size();
@@ -161,20 +157,14 @@ public class GithubRepo {
 
     }
 
-    private void deleteDirectoryRecursively(File dir) throws IOException {
-        if (dir.isDirectory()) {
-            File[] files = dir.listFiles();
-            if (files != null) {
-                for (File file : files) {
-                    deleteDirectoryRecursively(file);
-                }
-            }
-        }
-        if (!dir.delete()) {
-            throw new IOException("Cuoldnt delete dir!");
-        }
+
+
+    public void clearData() {
+        cloneCommand.close();
+        System.out.println("clearing this");
+        fileMetricsList.clear();
+        localRepoPath = null;
+        System.out.println("Data cleared successfully.");
     }
-
-
 
 }

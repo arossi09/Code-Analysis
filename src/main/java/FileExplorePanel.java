@@ -1,7 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
-public class FileExplorePanel extends JPanel {
+public class FileExplorePanel extends JPanel{
 
     private JList<String> fileList;
     private DefaultListModel<String> fileListModel;
@@ -14,12 +14,10 @@ public class FileExplorePanel extends JPanel {
         fileList = new JList<>(fileListModel);
         methodList = new JList<>(methodListModel);
 
-        Font font = new Font("Arial", Font.BOLD, 16);
+        Font font = new Font("Arial", Font.BOLD, 12);
         fileList.setFont(font);
         methodList.setFont(font);
 
-        JMenu menu = new JMenu();
-        add(menu);
         JLabel filesLabel = new JLabel("Java Files:");
         JLabel methodsLabel = new JLabel("Methods:");
 
@@ -46,11 +44,10 @@ public class FileExplorePanel extends JPanel {
         JFrame explorerFrame = new JFrame("File Explorer");
         explorerFrame.setSize(800, 600);
         explorerFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
         FileExplorePanel fileExplorePanel = new FileExplorePanel();
         fileExplorePanel.setFiles(GithubRepo.getInstance().getFileMetricsList());
         explorerFrame.add(fileExplorePanel);
-
+        explorerFrame.addWindowListener(new WindowListener());
         explorerFrame.setVisible(true);
     }
 
@@ -60,7 +57,7 @@ public class FileExplorePanel extends JPanel {
         if(file != null){
 
             for (MethodMetrics method : file.getMethods()) {
-                methodListModel.addElement(method.getMethodName());
+                methodListModel.addElement(method.getMethodName() + " (" + method.getLines() + ") ");
             }
         } else {
             methodListModel.addElement("No methods found for the selected file.");
@@ -76,7 +73,7 @@ public class FileExplorePanel extends JPanel {
     public void setFiles(List<FileMetrics> files) {
         fileListModel.clear();
         for (FileMetrics file : files) {
-            fileListModel.addElement(file.getFileName());
+            fileListModel.addElement(file.getFileName() + " (File)");
         }
     }
 

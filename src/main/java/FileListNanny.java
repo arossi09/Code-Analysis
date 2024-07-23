@@ -18,7 +18,7 @@ public class FileListNanny implements MouseListener {
     @Override
     public void mouseClicked(MouseEvent e) {
         if (e.getSource().equals(List)) {
-            String selectedFile = List.getSelectedValue();
+            String selectedFile = List.getSelectedValue().split(" ")[0];
             FileExplorePanel.displayMethods(selectedFile);
             methodNanny.setSelectedFile(selectedFile);
         }
