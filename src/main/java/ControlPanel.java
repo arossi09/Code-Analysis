@@ -6,6 +6,8 @@ public class ControlPanel extends  JPanel{
 
 
     public ControlPanel(){
+        String[] selections = {"feature1","feature2", "feature3", "feature 4"};
+        setPreferredSize(new Dimension(100, 100));
         setLayout(new BorderLayout());
         setVisible(true);
         JTextField urlTextField = new JTextField(28);
@@ -21,9 +23,12 @@ public class ControlPanel extends  JPanel{
         goButton.addActionListener(nanny);
         goButton.setPreferredSize(new Dimension(50, 30));
 
+        JComboBox<String> selctionsBox = new JComboBox<>(selections);
+
 
         add(inputPanel);
         add(goButton);
+        add(selctionsBox);
     }
 
 

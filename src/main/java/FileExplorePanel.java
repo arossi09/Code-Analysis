@@ -7,6 +7,8 @@ public class FileExplorePanel extends JPanel{
     private DefaultListModel<String> fileListModel;
     private static DefaultListModel<String> methodListModel;
     private JList<String> methodList;
+    private static JDialog methodDialog = new JDialog((java.awt.Frame) null, true);
+    private static JTextArea methodDetailsText = new JTextArea();
 
     public FileExplorePanel(){
         fileListModel = new DefaultListModel<>();
@@ -39,6 +41,9 @@ public class FileExplorePanel extends JPanel{
         MethodListNanny methodNanny = new MethodListNanny(methodList);
         fileList.addMouseListener(new FileListNanny(fileList, methodNanny));
         methodList.addMouseListener(methodNanny);
+
+        methodDialog.setTitle("Method Details");
+        methodDialog.setLayout(new BorderLayout());
     }
    public static void openFileExplorerFrame() {
         JFrame explorerFrame = new JFrame("File Explorer");
@@ -68,7 +73,17 @@ public class FileExplorePanel extends JPanel{
     public static void openMethodDetails(String selectedFile, String selectedMethod){
         FileMetrics file = GithubRepo.getInstance().findFile(selectedFile);
         MethodMetrics method = file.findMethod(selectedMethod);
-        JOptionPane.showMessageDialog(null, "LOC" + method.getEloc());
+        methodDetailsText.setText("Lines: " + method.getLines() +
+                "\nLOC: "+ method.getLoc() +"\nELOC: " + method.getEloc() +
+                "\nILOC: " + method.getIloc() + "\nConditionals: " + method.getConditionalCount());
+        methodDetailsText.setEditable(false);
+        methodDetailsText.setColumns(15);
+        methodDetailsText.setRows(6);
+        methodDetailsText.setBackground(null);
+        methodDialog.add(methodDetailsText);
+        methodDialog.revalidate();
+        methodDialog.pack();
+        methodDialog.setVisible(true);
     }
     public void setFiles(List<FileMetrics> files) {
         fileListModel.clear();

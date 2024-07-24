@@ -13,7 +13,6 @@ public class Main extends JFrame {
     }
 
     public Main(){
-        JFrame window = new JFrame();
         ControlPanel p = new ControlPanel();
         add(p);
 

@@ -18,6 +18,7 @@ public class ActionNanny extends JFrame implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand().equals("Go")){
+            //check drop down for certain features
             if(!repoUrl.getText().isEmpty()) {
                 GithubRepo gitInstance = GithubRepo.getInstance();
                 gitInstance.cloneRepo(repoUrl.getText());
