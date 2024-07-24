@@ -1,3 +1,9 @@
+/***
+ @author Anthony
+
+ Class Description: stores metrics for
+ methods parsed in the GithubRepo parser
+ */
 public class MethodMetrics {
     private String methodName;
     private int conditionalCount;

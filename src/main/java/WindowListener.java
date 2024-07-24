@@ -1,5 +1,12 @@
 import java.awt.event.WindowEvent;
+/***
+ @author Anthony
 
+ Class Description: Clears the sentinal
+ instance and data when window is closed
+ when attactched (useful for clearing
+ sentinal when feature is closed)
+ */
 public class WindowListener implements java.awt.event.WindowListener {
 
     @Override

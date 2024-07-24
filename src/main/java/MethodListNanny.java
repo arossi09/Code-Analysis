@@ -1,14 +1,17 @@
 import javax.swing.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+/***
+@author Anthony
 
-public class MethodListNanny implements MouseListener {
+Class Description: adds functionality for
+file explorer so that methods are tracked
+when clicked in Methods panel
+*/
+
+public class MethodListNanny implements MouseListener, FileSelectionObserver {
 
     private JList<String> List;
-
-
-
-
     private String selectedFile = null;
 
     public MethodListNanny(JList<String> List ){
@@ -44,6 +47,11 @@ public class MethodListNanny implements MouseListener {
 
     }
     public void setSelectedFile(String selectedFile) {
+        this.selectedFile = selectedFile;
+    }
+
+    @Override
+    public void onFileSelected(String selectedFile) {
         this.selectedFile = selectedFile;
     }
 }

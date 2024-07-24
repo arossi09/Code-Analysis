@@ -1,6 +1,13 @@
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
+/***
+ @author Anthony
+
+ Class Description: Creates and adds data
+ to the file explorer panel from the repo
+ parsed through the GithubRepo sentinal.
+ */
 public class FileExplorePanel extends JPanel{
 
     private JList<String> fileList;
@@ -39,7 +46,11 @@ public class FileExplorePanel extends JPanel{
         add(splitPane, BorderLayout.CENTER);
 
         MethodListNanny methodNanny = new MethodListNanny(methodList);
-        fileList.addMouseListener(new FileListNanny(fileList, methodNanny));
+        FileListNanny fileListNanny = new FileListNanny(fileList);
+
+        fileListNanny.addObserver(methodNanny);
+
+        fileList.addMouseListener(fileListNanny);
         methodList.addMouseListener(methodNanny);
 
         methodDialog.setTitle("Method Details");
@@ -76,6 +87,7 @@ public class FileExplorePanel extends JPanel{
         methodDetailsText.setText("Lines: " + method.getLines() +
                 "\nLOC: "+ method.getLoc() +"\nELOC: " + method.getEloc() +
                 "\nILOC: " + method.getIloc() + "\nConditionals: " + method.getConditionalCount());
+
         methodDetailsText.setEditable(false);
         methodDetailsText.setColumns(15);
         methodDetailsText.setRows(6);

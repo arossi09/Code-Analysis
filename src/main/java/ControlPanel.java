@@ -4,14 +4,25 @@ import java.awt.event.ActionListener;
 
 public class ControlPanel extends  JPanel{
 
+    private JTextField urlTextField;
+    private JComboBox<String> selctionsBox;
+
+    public JTextField getUrlTextField() {
+        return urlTextField;
+    }
+
+    public JComboBox<String> getSelctionsBox() {
+        return selctionsBox;
+    }
 
     public ControlPanel(){
-        String[] selections = {"feature1","feature2", "feature3", "feature 4"};
+        String[] selections = {"File Explorer","UML diagram", "Charts", "feature 4"};
+
         setPreferredSize(new Dimension(100, 100));
         setLayout(new BorderLayout());
         setVisible(true);
-        JTextField urlTextField = new JTextField(28);
-        ActionNanny nanny = new ActionNanny(urlTextField, this);
+        urlTextField = new JTextField(28);
+        ActionNanny nanny = new ActionNanny(this);
         JPanel inputPanel = new JPanel();
         setLayout(new FlowLayout(FlowLayout.LEFT, 10, 5));
 
@@ -23,7 +34,7 @@ public class ControlPanel extends  JPanel{
         goButton.addActionListener(nanny);
         goButton.setPreferredSize(new Dimension(50, 30));
 
-        JComboBox<String> selctionsBox = new JComboBox<>(selections);
+        selctionsBox = new JComboBox<>(selections);
 
 
         add(inputPanel);

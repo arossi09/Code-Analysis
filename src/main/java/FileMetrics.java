@@ -1,6 +1,13 @@
 import java.util.ArrayList;
 import java.util.List;
 
+/***
+ @author Anthony
+
+ Class Description: stores metrics for
+ files parsed in the GithubRepo parser.
+ Has a list of MethodMetrics for each file.
+ */
 public class FileMetrics {
     private String fileName;
     private List<MethodMetrics> methods = new ArrayList<>();

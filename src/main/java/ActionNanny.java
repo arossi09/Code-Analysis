@@ -6,10 +6,10 @@ public class ActionNanny extends JFrame implements ActionListener{
 
     JTextField repoUrl;
     ControlPanel p;
-    public ActionNanny(JTextField url, ControlPanel p){
+    public ActionNanny(ControlPanel p){
         this.p = p;
-        if(url != null){
-            repoUrl = url;
+        if(p.getUrlTextField() != null){
+            repoUrl = p.getUrlTextField();
         }else {
             System.out.println("No url entered!");
         }
@@ -18,13 +18,19 @@ public class ActionNanny extends JFrame implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand().equals("Go")){
-            //check drop down for certain features
             if(!repoUrl.getText().isEmpty()) {
                 GithubRepo gitInstance = GithubRepo.getInstance();
-                gitInstance.cloneRepo(repoUrl.getText());
+                if (gitInstance.cloneRepo(repoUrl.getText()) == -1) {
+                    return;
+                }
+
                 gitInstance.processData();
                 gitInstance.deleteClonedDir();
-                FileExplorePanel.openFileExplorerFrame();
+
+                //check drop down for certain features
+                if (p.getSelctionsBox().getSelectedItem().equals("File Explorer")){
+                    FileExplorePanel.openFileExplorerFrame();
+                }
             }
         }
     }

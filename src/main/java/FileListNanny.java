@@ -1,28 +1,48 @@
 import javax.swing.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
+import java.util.List;
 
+/***
+ @author Anthony
+
+ Class Description: adds functionality for
+ file explorer so that files are tracked
+ when clicked in File panel
+ */
 public class FileListNanny implements MouseListener {
 
-    private JList<String> List;
+    private JList<String> myList;
 
 
     private String selectedFile = null;
+    private List<FileSelectionObserver> observers = new ArrayList<>();
 
-    private MethodListNanny methodNanny;
+    public FileListNanny(JList<String> List){
+        this.myList = List;
+    }
+    public void addObserver(FileSelectionObserver observer) {
+        observers.add(observer);
+    }
 
-    public FileListNanny(JList<String> List, MethodListNanny methodNanny){
-        this.List = List;
-        this.methodNanny = methodNanny;
+    public void removeObserver(FileSelectionObserver observer) {
+        observers.remove(observer);
     }
     @Override
     public void mouseClicked(MouseEvent e) {
-        if (e.getSource().equals(List)) {
-            String selectedFile = List.getSelectedValue().split(" ")[0];
+        if (e.getSource().equals(myList)) {
+            String selectedFile = myList.getSelectedValue().split(" ")[0];
             FileExplorePanel.displayMethods(selectedFile);
-            methodNanny.setSelectedFile(selectedFile);
+            notifyObservers(selectedFile);
         }
 
+    }
+
+    private void notifyObservers(String selectedFile) {
+        for (FileSelectionObserver observer : observers) {
+            observer.onFileSelected(selectedFile);
+        }
     }
 
     @Override

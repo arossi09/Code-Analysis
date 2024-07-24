@@ -45,12 +45,12 @@ public class GithubRepo {
         return null;
     }
 
-    public void cloneRepo(String repoUrl){
+    public int cloneRepo(String repoUrl){
         if (Files.exists(Path.of(localPath))) {
             try {
                 FileUtils.deleteDirectory(Paths.get(localPath).toFile());
             }catch (IOException e){
-                e.printStackTrace();
+                return -1;
             }
         }
 
@@ -59,8 +59,9 @@ public class GithubRepo {
             localRepoPath = localPath;
             System.out.println("Repository cloned to " + localPath);
         } catch (GitAPIException e) {
-            e.printStackTrace();
+            return -1;
         }
+        return 0;
     }
 
     public void deleteClonedDir(){
