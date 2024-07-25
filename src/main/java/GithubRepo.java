@@ -1,4 +1,7 @@
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.ParseResult;
 import com.github.javaparser.StaticJavaParser;
+import com.github.javaparser.printer.lexicalpreservation.LexicalPreservingPrinter;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import com.github.javaparser.ast.CompilationUnit;
@@ -83,7 +86,7 @@ public class GithubRepo {
         try{
             Files.walk(Paths.get(localRepoPath))
                     .filter(Files::isRegularFile)
-                    .filter(path -> path.toString().endsWith("java") || path.toString().endsWith(".c"))
+                    .filter(path -> path.toString().endsWith("java"))
                     .forEach(this::processFile);
         } catch (IOException e) {
             e.printStackTrace();
@@ -101,6 +104,7 @@ public class GithubRepo {
             int iloc = 0;
 
             CompilationUnit cu = StaticJavaParser.parse(file);
+            LexicalPreservingPrinter.setup(cu);
 
             for (MethodDeclaration method : cu.findAll(MethodDeclaration.class)) {
                 MethodMetrics methodMetrics = new MethodMetrics(method.getNameAsString());
@@ -111,13 +115,13 @@ public class GithubRepo {
                 int conditionalCount = 0;
 
                 if (method.getBody().isPresent()) {
-                    String[] Lines = method.getBody().get().toString().split("\n");
-
+                    String body = LexicalPreservingPrinter.print(method.getBody().get());
+                    String[] Lines = body.split("\n", -1);
                     for (String line : Lines) {
                         String trimmedLine = line.trim();
                         methodLines++;
 
-                        if (!trimmedLine.isEmpty() && !trimmedLine.startsWith("//")) {
+                        if (!trimmedLine.isEmpty() && !trimmedLine.contains("//")) {
                             methodLoc++;
 
                             if((!trimmedLine.contains("{") && !trimmedLine.contains("}")) ||
@@ -131,6 +135,7 @@ public class GithubRepo {
                                 conditionalCount++;
                             }
                         }
+
                     }
                 }
 
@@ -140,6 +145,7 @@ public class GithubRepo {
                 methodMetrics.setEloc(methodEloc);
                 methodMetrics.setIloc(methodIloc);
                 methodMetrics.setConditionalCount(conditionalCount);
+                flagMethod(methodMetrics);
                 fileMetrics.addMethod(methodMetrics);
 
 
@@ -158,6 +164,18 @@ public class GithubRepo {
 
     }
 
+    public static void flagMethod(MethodMetrics method){
+        int lines = method.getLines();
+        if (lines >= 50) {
+            method.setMetricStatus("bad");
+        } else if (lines >= 20) {
+            method.setMetricStatus("average");
+        } else if (lines >= 1) {
+            method.setMetricStatus("good");
+        } else {
+            method.setMetricStatus("none");
+        }
+    }
 
 
     public void clearData() {

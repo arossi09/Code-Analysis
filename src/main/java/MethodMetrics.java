@@ -8,6 +8,16 @@ public class MethodMetrics {
     private String methodName;
     private int conditionalCount;
 
+    public String getMetricStatus() {
+        return metricStatus;
+    }
+
+    private String metricStatus;
+
+    public void setMetricStatus(String metricStatus) {
+        this.metricStatus = metricStatus;
+    }
+
     private int lines;
     private int loc;
     private int eloc;

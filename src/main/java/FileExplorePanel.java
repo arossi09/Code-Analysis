@@ -73,7 +73,7 @@ public class FileExplorePanel extends JPanel{
         if(file != null){
 
             for (MethodMetrics method : file.getMethods()) {
-                methodListModel.addElement(method.getMethodName() + " (" + method.getLines() + ") ");
+                methodListModel.addElement(method.getMethodName() + " (" + method.getLines() + ") " + method.getMetricStatus());
             }
         } else {
             methodListModel.addElement("No methods found for the selected file.");
