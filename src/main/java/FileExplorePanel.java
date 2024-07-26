@@ -12,8 +12,8 @@ public class FileExplorePanel extends JPanel{
 
     private JList<String> fileList;
     private DefaultListModel<String> fileListModel;
-    private static DefaultListModel<String> methodListModel;
-    private JList<String> methodList;
+    private static DefaultListModel<MethodMetrics> methodListModel;
+    private JList<MethodMetrics> methodList;
     private static JDialog methodDialog = new JDialog((java.awt.Frame) null, true);
     private static JTextArea methodDetailsText = new JTextArea();
 
@@ -26,6 +26,8 @@ public class FileExplorePanel extends JPanel{
         Font font = new Font("Arial", Font.BOLD, 12);
         fileList.setFont(font);
         methodList.setFont(font);
+
+        methodList.setCellRenderer(new MethodCellRenderer());
 
         JLabel filesLabel = new JLabel("Java Files:");
         JLabel methodsLabel = new JLabel("Methods:");
@@ -73,10 +75,10 @@ public class FileExplorePanel extends JPanel{
         if(file != null){
 
             for (MethodMetrics method : file.getMethods()) {
-                methodListModel.addElement(method.getMethodName() + " (" + method.getLines() + ") " + method.getMetricStatus());
+                methodListModel.addElement(method);
             }
         } else {
-            methodListModel.addElement("No methods found for the selected file.");
+            //methodListModel.addElement("No methods found for the selected file.");
         }
 
     }

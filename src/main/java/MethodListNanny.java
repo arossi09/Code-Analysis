@@ -11,17 +11,17 @@ when clicked in Methods panel
 
 public class MethodListNanny implements MouseListener, FileSelectionObserver {
 
-    private JList<String> List;
+    private JList<MethodMetrics> List;
     private String selectedFile = null;
 
-    public MethodListNanny(JList<String> List ){
+    public MethodListNanny(JList<MethodMetrics> List ){
         this.List = List;
     }
     @Override
     public void mouseClicked(MouseEvent e) {
         if (e.getClickCount() == 2) {
             if (e.getSource().equals(List) && selectedFile != null) {
-                String selectedMethod = List.getSelectedValue().split(" ")[0];
+                String selectedMethod = List.getSelectedValue().getMethodName();
                 FileExplorePanel.openMethodDetails(selectedFile, selectedMethod);
             }
         }

@@ -8,7 +8,7 @@ public class Main extends JFrame {
         ui.setSize(500, 100);
         ui.setTitle("Github Repo Control Panel");
         ui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        ui.setResizable(false);
+        ui.setResizable(true);
         ui.setVisible(true);
     }
 
