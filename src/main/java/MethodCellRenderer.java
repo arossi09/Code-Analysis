@@ -13,11 +13,19 @@ public class MethodCellRenderer extends JPanel implements ListCellRenderer<Metho
     private JLabel methodLabel;
     private JLabel statusLabel;
 
+    private JLabel conditionFlagLabel;
+    private JPanel iconPanel;
+
     public MethodCellRenderer() {
         setLayout(new BorderLayout(5, 5));
         methodLabel = new JLabel();
         statusLabel = new JLabel();
-        add(statusLabel, BorderLayout.WEST);
+        conditionFlagLabel = new JLabel();
+        iconPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 2, 5));
+        iconPanel.add(statusLabel);
+        iconPanel.add(conditionFlagLabel);
+
+        add(iconPanel, BorderLayout.WEST);
         add(methodLabel, BorderLayout.CENTER);
     }
 
@@ -29,14 +37,24 @@ public class MethodCellRenderer extends JPanel implements ListCellRenderer<Metho
 
         methodLabel.setText(methodName + " (" + value.getLines() + ")");
         statusLabel.setIcon(createCircleIcon(getColor(metricStatus)));
+        if(value.getConditionalCount() > 10){
+            conditionFlagLabel.setIcon(createTriangleIcon());
+        }else{
+            conditionFlagLabel.setIcon(null);
+        }
 
         if (isSelected) {
             setBackground(list.getSelectionBackground());
             setForeground(list.getSelectionForeground());
+            iconPanel.setBackground(list.getSelectionBackground());
+            iconPanel.setForeground(list.getSelectionForeground());
         } else {
             setBackground(list.getBackground());
             setForeground(list.getForeground());
+            iconPanel.setBackground(list.getBackground());
+            iconPanel.setForeground(list.getForeground());
         }
+
 
         return this;
     }
@@ -60,6 +78,25 @@ public class MethodCellRenderer extends JPanel implements ListCellRenderer<Metho
         Graphics2D g2 = image.createGraphics();
         g2.setColor(color);
         g2.fillOval(0, 0, size, size);
+        g2.dispose();
+        return new ImageIcon(image);
+    }
+    private Icon createTriangleIcon() {
+        int size = 10;
+        BufferedImage image = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2 = image.createGraphics();
+
+        g2.setColor(Color.red);
+        int[] xPoints = {0, size / 2, size};
+        int[] yPoints = {size, 0, size};
+        g2.fillPolygon(xPoints, yPoints, 3);
+
+        g2.setColor(Color.WHITE);
+        int margin = size / 4;
+        int[] xPointsInner = {margin, size / 2, size - margin};
+        int[] yPointsInner = {size - margin, margin, size - margin};
+        g2.fillPolygon(xPointsInner, yPointsInner, 3);
+
         g2.dispose();
         return new ImageIcon(image);
     }

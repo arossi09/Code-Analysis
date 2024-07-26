@@ -18,6 +18,7 @@ public class FileExplorePanel extends JPanel{
     private static JTextArea methodDetailsText = new JTextArea();
 
     public FileExplorePanel(){
+
         fileListModel = new DefaultListModel<>();
         methodListModel = new DefaultListModel<>();
         fileList = new JList<>(fileListModel);
@@ -50,13 +51,14 @@ public class FileExplorePanel extends JPanel{
         MethodListNanny methodNanny = new MethodListNanny(methodList);
         FileListNanny fileListNanny = new FileListNanny(fileList);
 
-        fileListNanny.addObserver(methodNanny);
 
+        fileListNanny.addObserver(methodNanny);
         fileList.addMouseListener(fileListNanny);
         methodList.addMouseListener(methodNanny);
 
         methodDialog.setTitle("Method Details");
         methodDialog.setLayout(new BorderLayout());
+
     }
    public static void openFileExplorerFrame() {
         JFrame explorerFrame = new JFrame("File Explorer");
