@@ -46,9 +46,6 @@ public class MethodListNanny implements MouseListener, FileSelectionObserver {
     public void mouseExited(MouseEvent e) {
 
     }
-    public void setSelectedFile(String selectedFile) {
-        this.selectedFile = selectedFile;
-    }
 
     @Override
     public void onFileSelected(String selectedFile) {
