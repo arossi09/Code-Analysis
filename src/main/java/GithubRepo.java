@@ -16,6 +16,13 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+/***
+ @author Anthony
+
+ Class Description: sentinal containing
+ the data from the parsed Github Repo
+ */
+
 public class GithubRepo {
 
     private static GithubRepo instance = null;
