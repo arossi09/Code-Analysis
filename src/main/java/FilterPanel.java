@@ -13,8 +13,9 @@ import java.io.IOException;
 /***
  @author Blake
 
- Class Description: Nanny for events on "Go". Processes data through a GithubRepo instance,
- and opens features based on menu selection
+ Class Description: A GridBag designed Panel with fields for the filter values and relies
+ on FilteredResults when button pressed. Clustering through Weka's Library that is "random"
+ but grabs the same 3 metrics.
  */
 
 
@@ -93,7 +94,6 @@ public class FilterPanel extends JPanel {
                 runFilter();
             }
         });
-
         clusteringAnalysisButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -124,19 +124,17 @@ public class FilterPanel extends JPanel {
             GithubRepo.getInstance().generateArffFile(arffFilePath);
             File arffFile = new File(arffFilePath);
             if (!arffFile.exists() || !arffFile.canRead()) {
-                throw new IOException("ARFF file not found or not readable: " + arffFilePath);
+                throw new IOException("not found or not readable: " + arffFilePath);
             }
             DataSource source = new DataSource(arffFile.getAbsolutePath());
             Instances data = source.getDataSet();
-
             SimpleKMeans clusterer = new SimpleKMeans();
             clusterer.setNumClusters(3);
             clusterer.buildClusterer(data);
             ClusterEvaluation eval = new ClusterEvaluation();
             eval.setClusterer(clusterer);
             eval.evaluateClusterer(new Instances(data));
-
-            StringBuilder results = new StringBuilder("Clustering Results:\n");
+            StringBuilder results = new StringBuilder("Cluster Results:\n");
             results.append(eval.clusterResultsToString());
 
             JOptionPane.showMessageDialog(this, results.toString(), "Clustering Analysis", JOptionPane.INFORMATION_MESSAGE);

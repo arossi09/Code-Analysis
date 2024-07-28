@@ -4,8 +4,7 @@ import java.awt.*;
 /***
  @author Blake
 
- Class Description: Nanny for events on "Go". Processes data through a GithubRepo instance,
- and opens features based on menu selection
+ Class Description: Separate panel for the method Details
  */
 public class MethodDetailPanel extends JPanel {
     private JTextArea methodDetailArea;

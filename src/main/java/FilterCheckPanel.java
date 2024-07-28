@@ -4,8 +4,8 @@ import java.awt.*;
 /***
  @author Blake
 
- Class Description: Nanny for events on "Go". Processes data through a GithubRepo instance,
- and opens features based on menu selection
+ Class Description: Top Right panel on filtered results showing the metrics
+ and filter pass/fails
  */
 public class FilterCheckPanel extends JPanel {
     private JLabel filterCheckLabel;

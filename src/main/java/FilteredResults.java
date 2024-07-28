@@ -6,8 +6,9 @@ import java.util.List;
 /***
  @author Blake
 
- Class Description: Nanny for events on "Go". Processes data through a GithubRepo instance,
- and opens features based on menu selection
+ Class Description: The Large framer for the results. Takes a lot of inspiration from Anthony's
+ FileExplorerPanel as he was finished very early on. Methods are flagged for failing a filter
+ and those files are sent to be displayed
  */
 public class FilteredResults extends JFrame {
     private static FilteredResults instance;
@@ -116,7 +117,7 @@ public class FilteredResults extends JFrame {
 
         for (FileMetrics file : GithubRepo.getInstance().getFileMetricsList()) {
             FileMetrics filteredFile = new FileMetrics(file.getFileName());
-            boolean hasFailingMethod = false;  // Flag to check if the file has at least one failing method
+            boolean hasFailingMethod = false;
             System.out.println("Processing file: " + file.getFileName());
 
             for (MethodMetrics method : file.getMethods()) {
