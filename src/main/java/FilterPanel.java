@@ -2,11 +2,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import weka.core.Attribute;
-import weka.core.DenseInstance;
-import weka.core.Instances;
 
+/***
+ @author Blake
+
+ Class Description: Nanny for events on "Go". Processes data through a GithubRepo instance,
+ and opens features based on menu selection
+ */
 public class FilterPanel extends JPanel {
 
     private JTextField locField;
@@ -95,9 +97,6 @@ public class FilterPanel extends JPanel {
         }
     }
 
-
-
-
     public static void openFilterPanel() {
         JFrame filterFrame = new JFrame("Filter");
         filterFrame.setSize(400, 300);
@@ -106,8 +105,5 @@ public class FilterPanel extends JPanel {
         filterFrame.add(filterPanel);
         filterFrame.setVisible(true);
     }
-
-//    //public static void main(String[] args) {
-//        SwingUtilities.invokeLater(() -> openFilterPanel());
-//    }
 }
+

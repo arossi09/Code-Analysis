@@ -19,6 +19,8 @@ import java.util.List;
 /***
  @author Anthony
 
+ @author Blake
+
  Class Description: sentinal containing
  the data from the parsed Github Repo
  */
@@ -123,6 +125,8 @@ public class GithubRepo {
 
                 if (method.getBody().isPresent()) {
                     String body = LexicalPreservingPrinter.print(method.getBody().get());
+                    methodMetrics.setMethodBody(body); //added this
+
                     String[] Lines = body.split("\n", -1);
                     for (String line : Lines) {
                         String trimmedLine = line.trim();
@@ -181,6 +185,22 @@ public class GithubRepo {
             method.setMetricStatus("good");
         } else {
             method.setMetricStatus("none");
+        }
+    }
+
+    //Same objective as flagMethod but operates with Filter values
+    public static void flagMethod2(MethodMetrics method, int locFilter, int elocFilter, int ilocFilter, int conditionalsFilter) {
+        int loc = method.getLoc();
+        int eloc = method.getEloc();
+        int iloc = method.getIloc();
+        int conditionals = method.getConditionalCount();
+
+        if (loc > locFilter || eloc > elocFilter || iloc > ilocFilter || conditionals > conditionalsFilter) {
+            method.setMetricStatus("bad");
+        } else if (loc == locFilter || eloc == elocFilter || iloc == ilocFilter || conditionals == conditionalsFilter) {
+            method.setMetricStatus("average");
+        } else {
+            method.setMetricStatus("good");
         }
     }
 

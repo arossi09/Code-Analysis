@@ -3,6 +3,12 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/***
+ @author Blake
+
+ Class Description: Nanny for events on "Go". Processes data through a GithubRepo instance,
+ and opens features based on menu selection
+ */
 public class FilteredResults extends JFrame {
     private static FilteredResults instance;
     private JList<String> fileList;
@@ -12,6 +18,11 @@ public class FilteredResults extends JFrame {
     private MethodDetailPanel methodDetailPanel;
     private FilterCheckPanel filterCheckPanel;
     private JTextArea textField;
+
+    private int currentLocFilter;
+    private int currentElocFilter;
+    private int currentIlocFilter;
+    private int currentConditionalsFilter;
 
     private FilteredResults() {
         setTitle("Filtered Results");
@@ -29,6 +40,7 @@ public class FilteredResults extends JFrame {
         filterCheckPanel = new FilterCheckPanel();
         textField = new JTextArea();
         textField.setEditable(false);
+        textField.setText("Files with metrics above the filter values will be displayed");
         setLayout(new BorderLayout());
 
         JSplitPane fileMethodSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new JScrollPane(fileList), new JScrollPane(methodList));
@@ -85,37 +97,47 @@ public class FilteredResults extends JFrame {
 
     private void displayMethodDetails(MethodMetrics selectedMethod) {
         if (selectedMethod != null) {
-            filterCheckPanel.updateFilterChecks("Method: " + selectedMethod.getMethodName() +
-                    "\nLines: " + selectedMethod.getLines() +
-                    "\nLOC: " + selectedMethod.getLoc() +
-                    "\nELOC: " + selectedMethod.getEloc() +
-                    "\nILOC: " + selectedMethod.getIloc() +
-                    "\nConditionals: " + selectedMethod.getConditionalCount() +
-                    "\nStatus: " + selectedMethod.getMetricStatus());
-
-            String methodCode = "Placeholder for method code: " + selectedMethod.getMethodName();
+            filterCheckPanel.updateFilterChecks(selectedMethod, currentLocFilter, currentElocFilter,
+                    currentIlocFilter, currentConditionalsFilter);
+            String methodCode = selectedMethod.getMethodBody();
             methodDetailPanel.updateMethodDetails(methodCode);
-
-            textField.setText("Placeholder text for method: " + selectedMethod.getMethodName());
+            textField.setText("Displaying details for method: " + selectedMethod.getMethodName());
         }
     }
 
     public void filterResults(int loc, int eloc, int iloc, int conditionals) {
+        currentLocFilter = loc;
+        currentElocFilter = eloc;
+        currentIlocFilter = iloc;
+        currentConditionalsFilter = conditionals;
+
         List<FileMetrics> filteredFiles = new ArrayList<>();
         System.out.println("Filtering results with criteria - LOC: " + loc + ", ELOC: " + eloc + ", ILOC: " + iloc + ", Conditionals: " + conditionals);
+
         for (FileMetrics file : GithubRepo.getInstance().getFileMetricsList()) {
             FileMetrics filteredFile = new FileMetrics(file.getFileName());
+            boolean hasFailingMethod = false;  // Flag to check if the file has at least one failing method
+            System.out.println("Processing file: " + file.getFileName());
+
             for (MethodMetrics method : file.getMethods()) {
-                if (method.getLoc() >= loc && method.getEloc() >= eloc && method.getIloc() >= iloc && method.getConditionalCount() >= conditionals) {
-                    filteredFile.addMethod(method);
+                System.out.println("Checking method: " + method.getMethodName());
+                System.out.println("Method metrics - LOC: " + method.getLoc() + ", ELOC: " + method.getEloc() + ", ILOC: " + method.getIloc() + ", Conditionals: " + method.getConditionalCount());
+
+                GithubRepo.flagMethod2(method, loc, eloc, iloc, conditionals);
+                if (method.getLoc() > loc || method.getEloc() > eloc || method.getIloc() > iloc || method.getConditionalCount() > conditionals) {
+                    hasFailingMethod = true;
                 }
+                filteredFile.addMethod(method);
             }
-            if (!filteredFile.getMethods().isEmpty()) {
+
+            if (hasFailingMethod) {
                 filteredFiles.add(filteredFile);
             }
         }
+
         setFiles(filteredFiles);
     }
+
 
     public static void openFilteredResultsFrame(int loc, int eloc, int iloc, int conditionals) {
         FilteredResults filteredResults = FilteredResults.getInstance();

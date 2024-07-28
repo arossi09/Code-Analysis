@@ -1,6 +1,12 @@
 import javax.swing.*;
 import java.awt.*;
 
+/***
+ @author Blake
+
+ Class Description: Nanny for events on "Go". Processes data through a GithubRepo instance,
+ and opens features based on menu selection
+ */
 public class MethodDetailPanel extends JPanel {
     private JTextArea methodDetailArea;
 

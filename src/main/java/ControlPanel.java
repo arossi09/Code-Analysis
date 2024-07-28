@@ -16,7 +16,7 @@ public class ControlPanel extends  JPanel{
     }
 
     public ControlPanel(){
-        String[] selections = {"File Explorer","UML diagram", "Charts", "feature 4"};
+        String[] selections = {"File Explorer","UML diagram", "Charts", "Filter"};
 
         setPreferredSize(new Dimension(100, 100));
         setLayout(new BorderLayout());

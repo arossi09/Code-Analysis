@@ -1,5 +1,6 @@
 /***
  @author Anthony
+ @author Blake
 
  Class Description: stores metrics for
  methods parsed in the GithubRepo parser
@@ -22,6 +23,7 @@ public class MethodMetrics {
     private int loc;
     private int eloc;
     private int iloc;
+    private String methodBody;
 
     public MethodMetrics(String name){
         methodName = name;
@@ -73,5 +75,13 @@ public class MethodMetrics {
 
     public void setIloc(int iloc) {
         this.iloc = iloc;
+    }
+
+    public String getMethodBody() {  // Getter for method body
+        return methodBody;
+    }
+
+    public void setMethodBody(String methodBody) {  // Setter for method body
+        this.methodBody = methodBody;
     }
 }
