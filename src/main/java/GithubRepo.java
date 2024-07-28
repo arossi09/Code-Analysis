@@ -16,13 +16,17 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+
 /***
  @author Anthony
 
  @author Blake
 
  Class Description: sentinal containing
- the data from the parsed Github Repo
+ the data from the parsed Github Repo and filtering methods
  */
 
 public class GithubRepo {
@@ -125,7 +129,7 @@ public class GithubRepo {
 
                 if (method.getBody().isPresent()) {
                     String body = LexicalPreservingPrinter.print(method.getBody().get());
-                    methodMetrics.setMethodBody(body); //added this
+                    methodMetrics.setMethodBody(body);
 
                     String[] Lines = body.split("\n", -1);
                     for (String line : Lines) {
@@ -201,6 +205,27 @@ public class GithubRepo {
             method.setMetricStatus("average");
         } else {
             method.setMetricStatus("good");
+        }
+    }
+
+    public void generateArffFile(String arffFilePath) throws IOException {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(arffFilePath))) {
+            writer.write("@RELATION methodMetrics\n\n");
+            writer.write("@ATTRIBUTE loc NUMERIC\n");
+            writer.write("@ATTRIBUTE eloc NUMERIC\n");
+            writer.write("@ATTRIBUTE iloc NUMERIC\n");
+            writer.write("@ATTRIBUTE conditionals NUMERIC\n\n");
+            writer.write("@DATA\n");
+
+            for (FileMetrics fileMetrics : fileMetricsList) {
+                for (MethodMetrics methodMetrics : fileMetrics.getMethods()) {
+                    writer.write(String.format("%d,%d,%d,%d\n",
+                            methodMetrics.getLoc(),
+                            methodMetrics.getEloc(),
+                            methodMetrics.getIloc(),
+                            methodMetrics.getConditionalCount()));
+                }
+            }
         }
     }
 

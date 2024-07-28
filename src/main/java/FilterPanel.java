@@ -1,7 +1,14 @@
+import weka.clusterers.ClusterEvaluation;
+import weka.clusterers.SimpleKMeans;
+import weka.core.Instances;
+import weka.core.converters.ConverterUtils.DataSource;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 
 /***
  @author Blake
@@ -9,13 +16,15 @@ import java.awt.event.ActionListener;
  Class Description: Nanny for events on "Go". Processes data through a GithubRepo instance,
  and opens features based on menu selection
  */
-public class FilterPanel extends JPanel {
 
+
+public class FilterPanel extends JPanel {
     private JTextField locField;
     private JTextField elocField;
     private JTextField ilocField;
     private JTextField conditionalsField;
     private JButton runFilterButton;
+    private JButton clusteringAnalysisButton;
 
     public FilterPanel() {
         setLayout(new GridBagLayout());
@@ -30,6 +39,7 @@ public class FilterPanel extends JPanel {
         conditionalsField = new JTextField(10);
 
         runFilterButton = new JButton("Run Filter");
+        clusteringAnalysisButton = new JButton("Clustering Analysis"); // New Button
         gbc.insets = new Insets(10, 10, 10, 10);
 
         gbc.gridx = 0;
@@ -73,12 +83,23 @@ public class FilterPanel extends JPanel {
         gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.CENTER;
         add(runFilterButton, gbc);
+
+        gbc.gridy = 5;
+        gbc.insets = new Insets(20, 10, 10, 10);
+        add(clusteringAnalysisButton, gbc);
         runFilterButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 runFilter();
             }
         });
+
+        clusteringAnalysisButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                runClusteringAnalysis();
+            }
+        }); // Add ActionListener
     }
 
     private void runFilter() {
@@ -97,6 +118,36 @@ public class FilterPanel extends JPanel {
         }
     }
 
+    private void runClusteringAnalysis() {
+        try {
+            String arffFilePath = "src/main/java/data.arff";
+            GithubRepo.getInstance().generateArffFile(arffFilePath);
+            File arffFile = new File(arffFilePath);
+            if (!arffFile.exists() || !arffFile.canRead()) {
+                throw new IOException("ARFF file not found or not readable: " + arffFilePath);
+            }
+            DataSource source = new DataSource(arffFile.getAbsolutePath());
+            Instances data = source.getDataSet();
+
+            SimpleKMeans clusterer = new SimpleKMeans();
+            clusterer.setNumClusters(3);
+            clusterer.buildClusterer(data);
+            ClusterEvaluation eval = new ClusterEvaluation();
+            eval.setClusterer(clusterer);
+            eval.evaluateClusterer(new Instances(data));
+
+            StringBuilder results = new StringBuilder("Clustering Results:\n");
+            results.append(eval.clusterResultsToString());
+
+            JOptionPane.showMessageDialog(this, results.toString(), "Clustering Analysis", JOptionPane.INFORMATION_MESSAGE);
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, "Error loading ARFF file: " + ex.getMessage(), "File Error", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+
     public static void openFilterPanel() {
         JFrame filterFrame = new JFrame("Filter");
         filterFrame.setSize(400, 300);
@@ -106,4 +157,3 @@ public class FilterPanel extends JPanel {
         filterFrame.setVisible(true);
     }
 }
-
