@@ -1,5 +1,4 @@
-import com.github.javaparser.JavaParser;
-import com.github.javaparser.ParseResult;
+
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.printer.lexicalpreservation.LexicalPreservingPrinter;
 import org.eclipse.jgit.api.Git;
@@ -16,9 +15,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
-import java.io.IOException;
 
 /***
  @author Anthony
@@ -50,6 +49,9 @@ public class GithubRepo {
             instance = new GithubRepo();
         }
         return instance;
+    }
+    public static String getLocalRepo(){
+        return localRepoPath;
     }
 
     public FileMetrics findFile(String fileName){
@@ -97,6 +99,7 @@ public class GithubRepo {
         }
 
         try{
+            DependencyData.getInstance().dependencyParser();
             Files.walk(Paths.get(localRepoPath))
                     .filter(Files::isRegularFile)
                     .filter(path -> path.toString().endsWith("java"))
@@ -118,6 +121,7 @@ public class GithubRepo {
 
             CompilationUnit cu = StaticJavaParser.parse(file);
             LexicalPreservingPrinter.setup(cu);
+
 
             for (MethodDeclaration method : cu.findAll(MethodDeclaration.class)) {
                 MethodMetrics methodMetrics = new MethodMetrics(method.getNameAsString());

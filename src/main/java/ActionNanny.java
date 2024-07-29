@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
  */
 public class ActionNanny extends JFrame implements ActionListener{
 
+    public static String actionState;
     private JTextField repoUrl;
     private ControlPanel p;
     public ActionNanny(ControlPanel p){
@@ -21,6 +22,7 @@ public class ActionNanny extends JFrame implements ActionListener{
         }
 
     }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand().equals("Go")){
@@ -36,7 +38,8 @@ public class ActionNanny extends JFrame implements ActionListener{
                     gitInstance.deleteClonedDir();
                 }
 
-
+//                actionState = p.getSelctionsBox().getSelectedItem().toString();
+//                System.out.println(actionState);
 
 
                 //check drop down for certain features
@@ -46,8 +49,8 @@ public class ActionNanny extends JFrame implements ActionListener{
                 else if (p.getSelctionsBox().getSelectedItem().equals("Filter")){
                     FilterPanel.openFilterPanel();
                 }
-                else if (p.getSelctionsBox().getSelectedItem().equals("UML diagram")){
-
+                else if (p.getSelctionsBox().getSelectedItem().equals("References")){
+                    DependencyChartPanel.openDependencyChartFrame();
                 }
                 else if (p.getSelctionsBox().getSelectedItem().equals("Charts")){
 
