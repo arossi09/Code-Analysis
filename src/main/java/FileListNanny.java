@@ -26,9 +26,7 @@ public class FileListNanny implements MouseListener {
         observers.add(observer);
     }
 
-    public void removeObserver(FileSelectionObserver observer) {
-        observers.remove(observer);
-    }
+
     @Override
     public void mouseClicked(MouseEvent e) {
         if (e.getSource().equals(myList)) {

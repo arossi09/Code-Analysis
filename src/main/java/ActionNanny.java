@@ -10,8 +10,8 @@ import java.awt.event.ActionListener;
  */
 public class ActionNanny extends JFrame implements ActionListener{
 
-    JTextField repoUrl;
-    ControlPanel p;
+    private JTextField repoUrl;
+    private ControlPanel p;
     public ActionNanny(ControlPanel p){
         this.p = p;
         if(p.getUrlTextField() != null){
@@ -26,12 +26,18 @@ public class ActionNanny extends JFrame implements ActionListener{
         if (e.getActionCommand().equals("Go")){
             if(!repoUrl.getText().isEmpty()) {
                 GithubRepo gitInstance = GithubRepo.getInstance();
+
                 if (gitInstance.cloneRepo(repoUrl.getText()) == -1) {
                     return;
                 }
 
-                gitInstance.processData();
-                gitInstance.deleteClonedDir();
+                if(gitInstance.getFileMetricsList().isEmpty()){
+                    gitInstance.processData();
+                    gitInstance.deleteClonedDir();
+                }
+
+
+
 
                 //check drop down for certain features
                 if (p.getSelctionsBox().getSelectedItem().equals("File Explorer")){

@@ -2,6 +2,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
+/***
+ @author Anthony
+
+ Class Description: Creates control
+ panel for user to select featurues
+ and insert their Github repo url
+ */
 public class ControlPanel extends  JPanel{
 
     private JTextField urlTextField;

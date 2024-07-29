@@ -80,7 +80,7 @@ public class FileExplorePanel extends JPanel{
                 methodListModel.addElement(method);
             }
         } else {
-            //methodListModel.addElement("No methods found for the selected file.");
+            methodListModel.addElement(new MethodMetrics("No methods found for the selected file."));
         }
 
     }
