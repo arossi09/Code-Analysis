@@ -99,9 +99,8 @@ public class FilterPanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 runClusteringAnalysis();
             }
-        }); // Add ActionListener
+        });
     }
-
     private void runFilter() {
         try {
             int loc = Integer.parseInt(locField.getText());
