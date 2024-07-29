@@ -53,7 +53,7 @@ public class ActionNanny extends JFrame implements ActionListener{
                     DependencyChartPanel.openDependencyChartFrame();
                 }
                 else if (p.getSelctionsBox().getSelectedItem().equals("Charts")){
-
+                    BarChartPanel.runBarChart();
                 }
             }
         }
