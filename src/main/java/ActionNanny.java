@@ -50,7 +50,7 @@ public class ActionNanny extends JFrame implements ActionListener{
 
                 }
                 else if (p.getSelctionsBox().getSelectedItem().equals("Charts")){
-
+                    BarChartPanel.runBarChart();
                 }
             }
         }
